@@ -161,7 +161,7 @@ export default function MemoryCard({ category, onOpen }: MemoryCardProps) {
                 <span>Preview Foto di Dalam Kartu:</span>
               </div>
               <div className="flex items-center gap-2">
-                {category.photos.slice(0, 5).map((p, idx) => (
+                {category.photos.slice(0, 4).map((p, idx) => (
                   <div
                     key={p.id}
                     className="relative w-12 h-12 rounded-xl overflow-hidden border-2 border-rose-200 shadow-xs transform hover:scale-110 transition-transform bg-rose-50 shrink-0"
@@ -176,7 +176,7 @@ export default function MemoryCard({ category, onOpen }: MemoryCardProps) {
                 ))}
                 {category.photos.length > 5 && (
                   <div className="w-12 h-12 rounded-xl bg-rose-500 border-2 border-white text-xs font-black text-white flex flex-col items-center justify-center shadow-xs shrink-0">
-                    <span>+{category.photos.length - 5}</span>
+                    <span>+{category.photos.length - 4}</span>
                     <span className="text-[9px]">FOTO</span>
                   </div>
                 )}

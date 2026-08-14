@@ -17,6 +17,10 @@ import {
   Maximize2,
   RotateCw,
   PartyPopper,
+  Heart,
+  Lock,
+  Unlock,
+  Images,
 } from "lucide-react";
 
 interface GalleryModalProps {
@@ -31,6 +35,9 @@ export default function GalleryModal({
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
   const [reactions, setReactions] = useState<{ id: number; emoji: string; x: number; y: number }[]>([]);
+  const [noteRevealed, setNoteRevealed] = useState(false);
+  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [showThumbs, setShowThumbs] = useState(false);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -114,7 +121,7 @@ export default function GalleryModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/70 backdrop-blur-md animate-fadeIn">
       {/* Modal Container */}
       <div className="relative w-full max-w-5xl my-auto bg-white rounded-3xl sm:rounded-[40px] shadow-2xl border-4 border-rose-300 overflow-hidden flex flex-col max-h-[92vh] animate-pop-in">
-        
+
         {/* Hello Kitty Cute Top Ribbon Header */}
         <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 washi-tape-kitty text-white shadow-md border-b-4 border-rose-600">
           <div className="flex items-center gap-3">
@@ -194,9 +201,8 @@ export default function GalleryModal({
 
                   {/* 3D Flip Card Container */}
                   <div
-                    className={`relative w-full max-w-[280px] min-h-[390px] bg-white rounded-2xl p-3.5 pb-5 shadow-xl hover:shadow-2xl transition-all duration-700 transform-style-3d border-2 border-rose-200/90 ${
-                      isFlipped ? "rotate-y-180" : ""
-                    }`}
+                    className={`relative w-full max-w-[280px] min-h-[390px] bg-white rounded-2xl p-3.5 pb-5 shadow-xl hover:shadow-2xl transition-all duration-700 transform-style-3d border-2 border-rose-200/90 ${isFlipped ? "rotate-y-180" : ""
+                      }`}
                   >
                     {/* FRONT OF POLAROID */}
                     <div className="backface-hidden flex flex-col h-full">
@@ -297,84 +303,227 @@ export default function GalleryModal({
         ))}
       </div>
 
-      {/* LIGHTBOX / SLIDESHOW MODAL */}
+      {/* ✿ KAWAII SLIDESHOW MODAL ✿ */}
       {activePhotoIndex !== null && activePhoto && (
         <div
-          className="fixed inset-0 z-60 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4"
-          onClick={() => setActivePhotoIndex(null)}
+          className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-3 sm:p-5"
+          style={{
+            background: "radial-gradient(ellipse at top, #ffe4ec 0%, #ffd6e7 30%, rgba(255,182,205,0.97) 100%)",
+            backdropFilter: "blur(20px) saturate(1.8)",
+          }}
+          onClick={() => { setActivePhotoIndex(null); setNoteRevealed(false); }}
         >
-          <button
-            onClick={() => setActivePhotoIndex(null)}
-            className="absolute top-6 right-6 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer z-50"
-            title="Tutup Slideshow"
-          >
-            <X className="w-6 h-6" />
-          </button>
 
-          {/* Prev Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrevPhoto();
-            }}
-            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 bg-rose-600/80 hover:bg-rose-600 text-white p-3.5 rounded-full backdrop-blur-md transition-all hover:scale-110 cursor-pointer z-50 shadow-lg border border-white/30"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+          {/* ── Decorative top strip (gingham ribbon) ── */}
+          <div className="absolute top-0 left-0 right-0 h-3 bg-kitty-gingham opacity-60 pointer-events-none" />
 
-          {/* Next Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNextPhoto();
-            }}
-            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 bg-rose-600/80 hover:bg-rose-600 text-white p-3.5 rounded-full backdrop-blur-md transition-all hover:scale-110 cursor-pointer z-50 shadow-lg border border-white/30"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          {/* Center Hello Kitty Polaroid Showcase */}
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl w-full bg-white rounded-3xl p-4 sm:p-6 shadow-2xl border-4 border-rose-400 animate-pop-in flex flex-col items-center"
-          >
-            {/* Animated Kitty GIF Sticker */}
-            <div className="absolute -top-6 -right-4 z-20 pointer-events-none">
-              <img
-                src="/assets/hello-kitty-gif-6.gif"
-                alt="Kitty Sticker"
-                className="w-16 h-16 object-contain drop-shadow-lg"
-              />
+          {/* ── TOP BAR ── */}
+          <div className="absolute top-3 left-0 right-0 flex items-center justify-between px-4 sm:px-6 z-30">
+            {/* Left: Hello Kitty + title */}
+            <div className="flex items-center gap-2">
+              <img src="/assets/hai-kitty.gif" alt="kitty" className="w-8 h-8 object-contain drop-shadow" />
+              <div>
+                <p className="font-[family-name:var(--font-fredoka)] text-rose-800 font-bold text-sm leading-none">
+                  {category.title}
+                </p>
+                <p className="text-[10px] text-rose-500 font-semibold">
+                  {activePhotoIndex + 1} / {category.photos.length} foto
+                </p>
+              </div>
             </div>
 
-            <div className="relative w-full max-h-[60vh] aspect-4/3 rounded-2xl overflow-hidden bg-rose-50 shadow-md">
-              <img
-                src={activePhoto.url}
-                alt={activePhoto.caption}
-                className="w-full h-full object-contain scale-130"
-              />
-              <span className="absolute top-3 right-3 text-3xl animate-bounce drop-shadow-md">
-                {activePhoto.sticker || "🎀"}
-              </span>
-            </div>
-
-            <div className="w-full mt-4 text-center">
-              <h3 className="font-[family-name:var(--font-caveat)] text-3xl font-bold text-rose-900">
-                {activePhoto.caption}
-              </h3>
-              <p className="text-xs text-zinc-500 font-medium mt-1">
-                {activePhoto.location && `• 📍 ${activePhoto.location}`}
-              </p>
-
-              {activePhoto.secretNote && (
-                <div className="mt-3 p-3 bg-rose-50 rounded-xl border border-rose-200">
-                  <p className="font-[family-name:var(--font-caveat)] text-2xl text-rose-800">
-                    &ldquo;{activePhoto.secretNote}&rdquo;
-                  </p>
-                </div>
-              )}
+            {/* Right: action buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowThumbs(v => !v); }}
+                className="flex items-center gap-1 text-[11px] font-extrabold px-3 py-1.5 rounded-full cursor-pointer transition-all hover:scale-105 active:scale-95 border-2"
+                style={{
+                  background: showThumbs ? "#f43f5e" : "#fff",
+                  color: showThumbs ? "#fff" : "#f43f5e",
+                  borderColor: "#f43f5e",
+                }}
+              >
+                <Images className="w-3 h-3" />
+                <span className="hidden sm:inline">Strip</span>
+              </button>
+              <button
+                onClick={() => { setActivePhotoIndex(null); setNoteRevealed(false); }}
+                className="p-2 rounded-full bg-rose-600 hover:bg-rose-700 text-white cursor-pointer transition-all hover:scale-110 active:scale-95 shadow-md border-2 border-rose-300"
+                title="Tutup (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           </div>
+
+          {/* ── MAIN AREA ── */}
+          <div
+            className="flex flex-col items-center w-full max-w-xl mt-10 mb-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            {/* ── BIG POLAROID CARD ── */}
+            <div className="relative w-full" style={{ maxWidth: "480px" }}>
+
+              {/* Washi tape top */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-7 washi-tape-kitty rounded-sm z-20 shadow flex items-center justify-center" style={{ transform: "translateX(-50%) rotate(-1.5deg)" }}>
+                <span className="text-[9px] font-black text-white uppercase tracking-widest opacity-90">✿ SANRIO ✿</span>
+              </div>
+
+              {/* Hello Kitty sticker corner */}
+              <div className="absolute -top-5 -right-4 z-30 pointer-events-none animate-bow-bounce">
+                <img src="/assets/hello-kitty-gif-6.gif" alt="kitty" className="w-16 h-16 object-contain drop-shadow-lg" />
+              </div>
+
+              {/* Polaroid body */}
+              <div className="bg-white rounded-3xl pt-5 px-4 pb-4 shadow-2xl border-4 border-rose-300" style={{ boxShadow: "0 20px 60px rgba(244,63,94,0.25), 0 4px 16px rgba(0,0,0,0.12)" }}>
+
+                {/* Photo */}
+                <div className="relative rounded-2xl overflow-hidden bg-rose-50 shadow-inner border border-rose-100" style={{ aspectRatio: "4/3" }}>
+                  <img
+                    key={activePhotoIndex}
+                    src={activePhoto.url}
+                    alt={activePhoto.caption}
+                    className="w-full h-full object-cover animate-pop-in"
+                    style={{ maxHeight: "44vh" }}
+                  />
+
+                  {/* Sticker */}
+                  <span className="absolute bottom-2.5 right-2.5 text-3xl drop-shadow-lg animate-bounce">
+                    {activePhoto.sticker || "🎀"}
+                  </span>
+
+                  {/* Like button */}
+                  <button
+                    onClick={() => { playSparkleSound(); setLiked(prev => ({ ...prev, [activePhotoIndex]: !prev[activePhotoIndex] })); }}
+                    className="absolute top-2.5 right-2.5 p-1.5 rounded-full cursor-pointer transition-all hover:scale-125 active:scale-90 shadow-md border-2 border-white"
+                    style={{ background: liked[activePhotoIndex] ? "#f43f5e" : "rgba(255,255,255,0.85)" }}
+                  >
+                    <Heart
+                      className="w-4 h-4"
+                      style={{ color: liked[activePhotoIndex] ? "#fff" : "#f43f5e" }}
+                      fill={liked[activePhotoIndex] ? "#fff" : "none"}
+                    />
+                  </button>
+                </div>
+
+                {/* Caption area */}
+                <div className="mt-3 text-center">
+                  <h3 className="font-[family-name:var(--font-caveat)] text-2xl sm:text-3xl font-bold text-rose-900 leading-snug">
+                    {activePhoto.caption}
+                  </h3>
+                  <div className="flex items-center justify-center flex-wrap gap-x-3 gap-y-1 mt-1">
+                    {activePhoto.date && (
+                      <span className="flex items-center gap-1 text-[11px] text-zinc-500 font-medium">
+                        <Calendar className="w-3 h-3 text-rose-400" />
+                        {activePhoto.date}
+                      </span>
+                    )}
+                    {activePhoto.location && (
+                      <span className="flex items-center gap-1 text-[11px] text-zinc-500 font-medium">
+                        <MapPin className="w-3 h-3 text-rose-400" />
+                        {activePhoto.location}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Secret note toggle */}
+                {activePhoto.secretNote && (
+                  <div className="mt-3 border-t-2 border-dashed border-rose-200 pt-3">
+                    <button
+                      onClick={() => { playSparkleSound(); setNoteRevealed(v => !v); }}
+                      className="w-full flex items-center justify-center gap-2 text-xs font-extrabold py-2 px-4 rounded-xl cursor-pointer transition-all hover:scale-[1.02] active:scale-95 border-2"
+                      style={{
+                        background: noteRevealed ? "linear-gradient(135deg,#f43f5e,#fb7185)" : "#fff0f5",
+                        color: noteRevealed ? "#fff" : "#e11d48",
+                        borderColor: "#fda4af",
+                      }}
+                    >
+                      {noteRevealed ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                      {noteRevealed ? "Sembunyikan Pesan 💌" : "Buka Pesan Rahasia 💌"}
+                    </button>
+
+                    {noteRevealed && (
+                      <div className="mt-2 p-3.5 bg-rose-50 rounded-xl border-2 border-rose-200 animate-pop-in">
+                        <p className="font-[family-name:var(--font-caveat)] text-2xl text-rose-800 leading-snug italic text-center">
+                          &ldquo;{activePhoto.secretNote}&rdquo;
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── Dot navigation + nav buttons row ── */}
+            <div className="flex items-center gap-3 mt-5">
+              {/* Prev */}
+              <button
+                onClick={handlePrevPhoto}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-rose-400 text-rose-600 hover:bg-rose-500 hover:text-white cursor-pointer transition-all hover:scale-110 active:scale-95 shadow-md"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {/* Pill dots */}
+              <div className="flex items-center gap-1.5">
+                {category.photos.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setNoteRevealed(false); setActivePhotoIndex(i); }}
+                    className="rounded-full cursor-pointer transition-all"
+                    style={{
+                      width: i === activePhotoIndex ? "22px" : "8px",
+                      height: "8px",
+                      background: i === activePhotoIndex ? "#f43f5e" : "#fda4af",
+                      boxShadow: i === activePhotoIndex ? "0 0 6px #f43f5e" : "none",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Next */}
+              <button
+                onClick={handleNextPhoto}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-rose-400 text-rose-600 hover:bg-rose-500 hover:text-white cursor-pointer transition-all hover:scale-110 active:scale-95 shadow-md"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* ── THUMBNAIL STRIP (toggleable) ── */}
+          {showThumbs && (
+            <div
+              className="absolute bottom-4 left-0 right-0 px-4 z-30"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-center gap-2 overflow-x-auto py-2" style={{ scrollbarWidth: "none" }}>
+                {category.photos.map((photo, i) => (
+                  <button
+                    key={photo.id}
+                    onClick={() => { setNoteRevealed(false); setActivePhotoIndex(i); }}
+                    className="shrink-0 rounded-xl overflow-hidden cursor-pointer transition-all hover:scale-110"
+                    style={{
+                      width: i === activePhotoIndex ? "56px" : "44px",
+                      height: i === activePhotoIndex ? "56px" : "44px",
+                      border: i === activePhotoIndex ? "3px solid #f43f5e" : "3px solid #fda4af",
+                      boxShadow: i === activePhotoIndex ? "0 0 12px rgba(244,63,94,0.6)" : "none",
+                      opacity: i === activePhotoIndex ? 1 : 0.65,
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Decorative bottom strip */}
+          <div className="absolute bottom-0 left-0 right-0 h-3 bg-kitty-gingham opacity-60 pointer-events-none" />
+
         </div>
       )}
     </div>
