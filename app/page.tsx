@@ -1,69 +1,106 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from "react";
+import { INITIAL_MEMORIES, MemoryCategory } from "./data/memoriesData";
+import MemoryCard from "./components/MemoryCard";
+import GalleryModal from "./components/GalleryModal";
+import MusicPlayer from "./components/MusicPlayer";
+import { playSparkleSound, playPopSound } from "./utils/soundEffects";
+import confetti from "canvas-confetti";
 
 export default function Home() {
+  const [categories] = useState<MemoryCategory[]>(INITIAL_MEMORIES);
+  const [selectedCategory, setSelectedCategory] = useState<MemoryCategory | null>(null);
+  const [kittyTalkIndex, setKittyTalkIndex] = useState(0);
+
+  const kittyQuotes = [
+    "Hallooo Nathaaa! Lihaattt Nieehh Momeenn Roblook 🎀",
+    "Nathaaa, jangan lupa selalu bawa senyum manis kamu yaa! 💕",
+    "Semoga hari ini dipenuhi hal-hal kecil yang bikin kamu bahagia! 🌷",
+    "Kalau lagi capek, istirahat dulu yaa. Kamu juga harus disayang! 🥺🎀",
+  ];
+
+  const handleOpenCategory = (cat: MemoryCategory) => {
+    const current = categories.find((c) => c.id === cat.id) || cat;
+    setSelectedCategory(current);
+  };
+
+  const handleKittyClick = () => {
+    playPopSound();
+    setKittyTalkIndex((prev) => (prev + 1) % kittyQuotes.length);
+    confetti({
+      particleCount: 20,
+      spread: 40,
+      origin: { y: 0.35 },
+      colors: ["#ff2d55", "#fb7185", "#ff85a2"],
+    });
+  };
+
+  const triggerGlobalConfetti = () => {
+    playSparkleSound();
+    confetti({
+      particleCount: 100,
+      spread: 120,
+      origin: { y: 0.6 },
+      colors: ["#ff2d55", "#fb7185", "#ff85a2", "#ffd1dc", "#fff1f2", "#f43f5e"],
+    });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="relative min-h-screen pb-24 overflow-x-hidden">
+
+      {/* Hero Header Section */}
+      <div className="relative z-10 max-w-5xl mx-auto pt-6 sm:pt-12 px-4 sm:px-6 text-center">
+        
+        {/* Animated Hello Kitty Mascot with Speech Bubble */}
+        <div className="flex flex-col items-center justify-center mb-2">
+          {/* Speech Bubble */}
+          <div
+            onClick={handleKittyClick}
+            className="relative cursor-pointer bg-white px-4 py-2 rounded-2xl border-2 border-rose-300 shadow-md mb-2 transition-transform hover:scale-105 active:scale-95 animate-pulse-subtle max-w-xs"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+            <p className="font-[family-name:var(--font-caveat)] text-xl sm:text-2xl font-bold text-rose-800 leading-tight">
+              &ldquo;{kittyQuotes[kittyTalkIndex]}&rdquo;
+            </p>
+            {/* Bubble Tail */}
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b-2 border-r-2 border-rose-300 transform rotate-45" />
+          </div>
+
+          {/* Hello Kitty Waving GIF */}
+          <div
+            onClick={handleKittyClick}
+            className="cursor-pointer group relative transform hover:scale-110 active:scale-95 transition-transform"
+            title="Klik Hello Kitty! 🎀"
+          >
+            <img
+              src="/assets/hai-kitty.gif"
+              alt="Hello Kitty Waving"
+              className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-lg"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <span className="absolute -top-1 -right-1 text-base animate-bounce">✨</span>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      {/* Centerpiece Landscape Memory Card Section */}
+      <div className="relative z-10 max-w-5xl mx-auto mt-8 px-4 sm:px-6 space-y-8">
+        {categories.map((category) => (
+          <MemoryCard
+            key={category.id}
+            category={category}
+            onOpen={handleOpenCategory}
+          />
+        ))}
+      </div>
+
+      {/* Gallery Modal when a card is clicked */}
+      <GalleryModal
+        category={selectedCategory}
+        onClose={() => setSelectedCategory(null)}
+      />
+
+      {/* Cute Background Music Player */}
+      <MusicPlayer />
+    </main>
   );
 }

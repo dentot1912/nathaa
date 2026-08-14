@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --font-cute: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-handwriting: 'Caveat', cursive, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(2deg);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes bowBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-5px) rotate(4deg) scale(1.08); }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes ambientGlow1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(60px, -40px) scale(1.15);
+    opacity: 0.65;
+  }
+}
+
+@keyframes ambientGlow2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-50px, 40px) scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+.animate-bow-bounce {
+  animation: bowBounce 2.5s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+.animate-pop-in {
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-glow-1 {
+  animation: ambientGlow1 12s ease-in-out infinite;
+}
+
+.animate-glow-2 {
+  animation: ambientGlow2 15s ease-in-out infinite;
+}
+
+/* Dreamy Hello Kitty Background System */
+.bg-kitty-dream {
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 25%, #fff5f8 50%, #fce7f3 75%, #fff1f2 100%);
+  background-attachment: fixed;
+}
+
+/* Soft delicate kawaii pastel grid overlay */
+.bg-kawaii-grid {
+  background-image: 
+    linear-gradient(to right, rgba(244, 114, 182, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(244, 114, 182, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-kitty-gingham {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(45deg, #ffe4e6 25%, transparent 25%), 
+    linear-gradient(-45deg, #ffe4e6 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #ffe4e6 75%), 
+    linear-gradient(-45deg, transparent 75%, #ffe4e6 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Cute Hello Kitty Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff1f2;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff4071;
+  border-radius: 10px;
+  border: 2px solid #fff1f2;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e11d48;
+}
+
+/* Polaroid 3D flip */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Hello Kitty Ribbon washi tape */
+.washi-tape-kitty {
+  background: #ff4d79;
+  background-image: repeating-linear-gradient(45deg, #ff6b8b, #ff6b8b 10px, #ff4d79 10px, #ff4d79 20px);
+  box-shadow: 0 2px 4px rgba(255, 77, 121, 0.2);
 }
